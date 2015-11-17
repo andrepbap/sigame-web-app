@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,39 +10,42 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
-class User
-{
+class User {
+
     /**
      * @var string
-     *
      * @ORM\Column(name="user_name", type="string", length=45, nullable=false)
+     * @Assert\Length(min="4", max="20", minMessage="Your name must be at least {{ limit }} characters long", maxMessage="Your name cannot be longer than {{ limit }} characters")
+     * @Assert\NotBlank()
      */
     private $userName;
 
     /**
      * @var \DateTime
-     *
      * @ORM\Column(name="birth", type="datetime", nullable=false)
+     * @Assert\Date()
+     * @Assert\NotBlank()
      */
     private $birth;
 
     /**
      * @var string
-     *
      * @ORM\Column(name="email", type="string", length=45, nullable=false)
+     * @Assert\Email()
+     * @Assert\NotBlank()
      */
     private $email;
 
     /**
      * @var string
-     *
      * @ORM\Column(name="password", type="string", length=45, nullable=false)
+     * @Assert\Length(min="4", max="16", minMessage="Your password must be at least {{ limit }} characters long", maxMessage="Your password cannot be longer than {{ limit }} characters")
+     * @Assert\NotBlank()
      */
     private $password;
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="blocked", type="boolean", nullable=false)
      */
     private $blocked = '0';
@@ -69,14 +73,22 @@ class User
 
     /**
      * @var float
-     *
+     * @Assert\Type(
+     *     type="float",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
+     * @Assert\NotBlank()
      * @ORM\Column(name="latitude", type="float", precision=10, scale=0, nullable=true)
      */
     private $latitude;
 
     /**
      * @var float
-     *
+     * @Assert\Type(
+     *     type="float",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
+     * @Assert\NotBlank()
      * @ORM\Column(name="longitude", type="float", precision=10, scale=0, nullable=true)
      */
     private $longitude;
@@ -107,21 +119,22 @@ class User
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct($userName, $email, $password, $birth) {
         $this->groupgroup = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->userName = $userName;
+        $this->email = $email;
+        $this->password = $password;
+        $this->birth = $birth;
     }
-
 
     /**
      * Set userName
      *
      * @param string $userName
-     *
+     * 
      * @return User
      */
-    public function setUserName($userName)
-    {
+    public function setUserName($userName) {
         $this->userName = $userName;
 
         return $this;
@@ -132,8 +145,7 @@ class User
      *
      * @return string
      */
-    public function getUserName()
-    {
+    public function getUserName() {
         return $this->userName;
     }
 
@@ -144,8 +156,7 @@ class User
      *
      * @return User
      */
-    public function setBirth($birth)
-    {
+    public function setBirth($birth) {
         $this->birth = $birth;
 
         return $this;
@@ -156,8 +167,7 @@ class User
      *
      * @return \DateTime
      */
-    public function getBirth()
-    {
+    public function getBirth() {
         return $this->birth;
     }
 
@@ -168,8 +178,7 @@ class User
      *
      * @return User
      */
-    public function setEmail($email)
-    {
+    public function setEmail($email) {
         $this->email = $email;
 
         return $this;
@@ -180,8 +189,7 @@ class User
      *
      * @return string
      */
-    public function getEmail()
-    {
+    public function getEmail() {
         return $this->email;
     }
 
@@ -192,8 +200,7 @@ class User
      *
      * @return User
      */
-    public function setPassword($password)
-    {
+    public function setPassword($password) {
         $this->password = $password;
 
         return $this;
@@ -204,8 +211,7 @@ class User
      *
      * @return string
      */
-    public function getPassword()
-    {
+    public function getPassword() {
         return $this->password;
     }
 
@@ -216,8 +222,7 @@ class User
      *
      * @return User
      */
-    public function setBlocked($blocked)
-    {
+    public function setBlocked($blocked) {
         $this->blocked = $blocked;
 
         return $this;
@@ -228,8 +233,7 @@ class User
      *
      * @return boolean
      */
-    public function getBlocked()
-    {
+    public function getBlocked() {
         return $this->blocked;
     }
 
@@ -240,8 +244,7 @@ class User
      *
      * @return User
      */
-    public function setPasswordRecuperationKey($passwordRecuperationKey)
-    {
+    public function setPasswordRecuperationKey($passwordRecuperationKey) {
         $this->passwordRecuperationKey = $passwordRecuperationKey;
 
         return $this;
@@ -252,8 +255,7 @@ class User
      *
      * @return string
      */
-    public function getPasswordRecuperationKey()
-    {
+    public function getPasswordRecuperationKey() {
         return $this->passwordRecuperationKey;
     }
 
@@ -264,8 +266,7 @@ class User
      *
      * @return User
      */
-    public function setRecuperationKeyDate($recuperationKeyDate)
-    {
+    public function setRecuperationKeyDate($recuperationKeyDate) {
         $this->recuperationKeyDate = $recuperationKeyDate;
 
         return $this;
@@ -276,8 +277,7 @@ class User
      *
      * @return \DateTime
      */
-    public function getRecuperationKeyDate()
-    {
+    public function getRecuperationKeyDate() {
         return $this->recuperationKeyDate;
     }
 
@@ -288,8 +288,7 @@ class User
      *
      * @return User
      */
-    public function setPhotoPatch($photoPatch)
-    {
+    public function setPhotoPatch($photoPatch) {
         $this->photoPatch = $photoPatch;
 
         return $this;
@@ -300,8 +299,7 @@ class User
      *
      * @return string
      */
-    public function getPhotoPatch()
-    {
+    public function getPhotoPatch() {
         return $this->photoPatch;
     }
 
@@ -312,8 +310,7 @@ class User
      *
      * @return User
      */
-    public function setLatitude($latitude)
-    {
+    public function setLatitude($latitude) {
         $this->latitude = $latitude;
 
         return $this;
@@ -324,8 +321,7 @@ class User
      *
      * @return float
      */
-    public function getLatitude()
-    {
+    public function getLatitude() {
         return $this->latitude;
     }
 
@@ -336,8 +332,7 @@ class User
      *
      * @return User
      */
-    public function setLongitude($longitude)
-    {
+    public function setLongitude($longitude) {
         $this->longitude = $longitude;
 
         return $this;
@@ -348,8 +343,7 @@ class User
      *
      * @return float
      */
-    public function getLongitude()
-    {
+    public function getLongitude() {
         return $this->longitude;
     }
 
@@ -360,8 +354,7 @@ class User
      *
      * @return User
      */
-    public function setPositionDate($positionDate)
-    {
+    public function setPositionDate($positionDate) {
         $this->positionDate = $positionDate;
 
         return $this;
@@ -372,8 +365,7 @@ class User
      *
      * @return \DateTime
      */
-    public function getPositionDate()
-    {
+    public function getPositionDate() {
         return $this->positionDate;
     }
 
@@ -382,8 +374,7 @@ class User
      *
      * @return integer
      */
-    public function getIduser()
-    {
+    public function getIduser() {
         return $this->iduser;
     }
 
@@ -394,8 +385,7 @@ class User
      *
      * @return User
      */
-    public function addGroupgroup(\AppBundle\Entity\Group $groupgroup)
-    {
+    public function addGroupgroup(\AppBundle\Entity\Group $groupgroup) {
         $this->groupgroup[] = $groupgroup;
 
         return $this;
@@ -406,8 +396,7 @@ class User
      *
      * @param \AppBundle\Entity\Group $groupgroup
      */
-    public function removeGroupgroup(\AppBundle\Entity\Group $groupgroup)
-    {
+    public function removeGroupgroup(\AppBundle\Entity\Group $groupgroup) {
         $this->groupgroup->removeElement($groupgroup);
     }
 
@@ -416,8 +405,8 @@ class User
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getGroupgroup()
-    {
+    public function getGroupgroup() {
         return $this->groupgroup;
     }
+
 }

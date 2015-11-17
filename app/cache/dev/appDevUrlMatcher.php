@@ -140,27 +140,16 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             not_api_group_getuserslocation:
 
             if (0 === strpos($pathinfo, '/api/user')) {
-                // api_user_add
-                if ($pathinfo === '/api/user/add') {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                        goto not_api_user_add;
+                // api_user_save
+                if ($pathinfo === '/api/user/save') {
+                    if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
+                        $allow = array_merge($allow, array('GET', 'HEAD'));
+                        goto not_api_user_save;
                     }
 
-                    return array (  '_controller' => 'AppBundle\\Controller\\Api\\UserController::addUser',  '_route' => 'api_user_add',);
+                    return array (  '_controller' => 'AppBundle\\Controller\\Api\\UserController::saveUser',  '_route' => 'api_user_save',);
                 }
-                not_api_user_add:
-
-                // api_user_edit
-                if (preg_match('#^/api/user/(?P<iduser>\\d+)/edit$#s', $pathinfo, $matches)) {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                        goto not_api_user_edit;
-                    }
-
-                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'api_user_edit')), array (  '_controller' => 'AppBundle\\Controller\\Api\\UserController::editUser',));
-                }
-                not_api_user_edit:
+                not_api_user_save:
 
                 // api_user_get
                 if (preg_match('#^/api/user/(?P<iduser>\\d+)/get$#s', $pathinfo, $matches)) {
