@@ -85,3 +85,5 @@ f4387a,127.0.0.1,GET,http://localhost:8000/api/user/9/set-position?json=%7B%22la
 8d0963,127.0.0.1,GET,http://localhost:8000/api/user/9/set-position?json=%7B%22latitude%22%3A%22-46.586113%22%2C%22longitude%22%3A%22-46.586113%22%7D,1447722358,,200
 7719a6,127.0.0.1,GET,http://localhost:8000/api/user/9/set-position?json=%7B%22latitude%22%3A%22-46.586113%22%2C%22longitude%22%3A%22-46.586113%22%7D,1447722453,,200
 97f650,127.0.0.1,GET,http://localhost:8000/api/user/9/set-position?json=%7B%22latitude%22%3A%22-46.586113%22%2C%22longitude%22%3A%22-46.586113%22%7D,1447722514,,200
+6785d0,127.0.0.1,GET,http://localhost:8000/api/user/save?json=%7B%22userName%22%3A%22Symfony%20api-key%22%2C%22email%22%3A%22testejson%40symfonyeditado.com%22%2C%22password%22%3A%22123456%22%2C%22birth%22%3A%221997-12-14%22%7D,1447781141,,200
+f81f5d,127.0.0.1,GET,http://localhost:8000/api/user/save?json=%7B%22userName%22%3A%22Symfony%20api-key%22%2C%22email%22%3A%22testejson%40symfonyeditado.com%22%2C%22password%22%3A%22123456%22%2C%22birth%22%3A%221997-12-14%22%7D,1447781182,,200

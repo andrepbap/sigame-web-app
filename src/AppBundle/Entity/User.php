@@ -53,7 +53,7 @@ class User {
     /**
      * @var string
      *
-     * @ORM\Column(name="password_recuperation_key", type="string", length=5, nullable=true)
+     * @ORM\Column(name="password_recuperation_key", type="string", length=45, nullable=true)
      */
     private $passwordRecuperationKey;
 
@@ -77,7 +77,6 @@ class User {
      *     type="float",
      *     message="The value {{ value }} is not a valid {{ type }}."
      * )
-     * @Assert\NotBlank()
      * @ORM\Column(name="latitude", type="float", precision=10, scale=0, nullable=true)
      */
     private $latitude;
@@ -88,7 +87,6 @@ class User {
      *     type="float",
      *     message="The value {{ value }} is not a valid {{ type }}."
      * )
-     * @Assert\NotBlank()
      * @ORM\Column(name="longitude", type="float", precision=10, scale=0, nullable=true)
      */
     private $longitude;
@@ -108,10 +106,17 @@ class User {
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $iduser;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="salt", type="string", length=45, nullable=false)
+     */
+    private $salt;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
-     *
+     * @Assert\NotBlank()
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group", mappedBy="useruser")
      */
     private $groupgroup;
@@ -119,12 +124,13 @@ class User {
     /**
      * Constructor
      */
-    public function __construct($userName, $email, $password, $birth) {
+    public function __construct($userName, $email, $password, $birth, $salt) {
         $this->groupgroup = new \Doctrine\Common\Collections\ArrayCollection();
         $this->userName = $userName;
         $this->email = $email;
         $this->password = $password;
         $this->birth = $birth;
+        $this->salt = $salt;
     }
 
     /**
@@ -389,6 +395,28 @@ class User {
         $this->groupgroup[] = $groupgroup;
 
         return $this;
+    }
+    
+    /**
+     * Set salt
+     *
+     * @param String $salt
+     *
+     * @return String
+     */
+    public function setSalt($salt) {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Get salt
+     *
+     * @return String
+     */
+    public function getSalt() {
+        return $this->salt;
     }
 
     /**
