@@ -124,13 +124,12 @@ class User {
     /**
      * Constructor
      */
-    public function __construct($userName, $email, $password, $birth, $salt) {
+    public function __construct($userName, $email, $password, $birth) {
         $this->groupgroup = new \Doctrine\Common\Collections\ArrayCollection();
         $this->userName = $userName;
         $this->email = $email;
         $this->password = $password;
         $this->birth = $birth;
-        $this->salt = $salt;
     }
 
     /**

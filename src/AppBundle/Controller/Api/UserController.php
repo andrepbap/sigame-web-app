@@ -7,11 +7,31 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use AppBundle\Utils\Hash;
+use AppBundle\Utils\ApiCrypter;
 use AppBundle\Entity\User;
 
 class UserController extends Controller {
 
+    /**
+     * @Route("/api/user/crypttest", name="api_user_crypttest")
+     */
+    public function cryptTest() {
+        $time = (String) time();
+        $str = "123456789-$time";
+        
+        $crypter = new ApiCrypter();
+        
+        $enStr = $crypter->encrypt($str);
+        
+        $output = "$str -----";
+        $output .= "String encriptada: $enStr ----";
+        $output .= 'String desencriptada: ' . $crypter->decrypt($enStr);
+        
+        return new JsonResponse(array(
+                'output' => $output,
+            ));
+    }
+    
     /**
      * @Route("/api/user/save", name="api_user_save")
      * @Method({"GET"})
@@ -44,10 +64,7 @@ class UserController extends Controller {
                 $user->setBirth(new \DateTime($params->birth));
             }
         } else {
-            $hash = Hash::hashSSHA($params->password);
-            $encrypted_password = $hash["encrypted"]; // encrypted password
-            $salt = $hash["salt"];
-            $user = new User($params->userName, $params->email, $encrypted_password, new \DateTime($params->birth), $salt);
+            $user = new User($params->userName, $params->email, $encrypted_password, new \DateTime($params->birth));
         }
 
         $validator = $this->get('validator');
