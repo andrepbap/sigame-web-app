@@ -140,11 +140,6 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             not_api_group_getuserslocation:
 
             if (0 === strpos($pathinfo, '/api/user')) {
-                // api_user_crypttest
-                if ($pathinfo === '/api/user/crypttest') {
-                    return array (  '_controller' => 'AppBundle\\Controller\\Api\\UserController::cryptTest',  '_route' => 'api_user_crypttest',);
-                }
-
                 // api_user_save
                 if ($pathinfo === '/api/user/save') {
                     if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {

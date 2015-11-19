@@ -2,20 +2,16 @@
 
 namespace AppBundle\Utils;
 
-class ApiCrypter {
+final class ApiCrypter {
 
-    private $iv = 'fdsfds85435nfdfs'; #Same as in JAVA
-    private $key = '89432hjfsd891787'; #Same as in JAVA
-
-    public function __construct() {
-        
-    }
+    const iv = 'ajf9gld3soh5dy56';
+    const key = 'znft4j27894kn94k1';
 
     public function encrypt($str) {
-        $str = $this->pkcs5_pad($str);
-        $iv = $this->iv;
+        $str = ApiCrypter::pkcs5_pad($str);
+        $iv = ApiCrypter::iv;
         $td = mcrypt_module_open('rijndael-128', '', 'cbc', $iv);
-        mcrypt_generic_init($td, $this->key, $iv);
+        mcrypt_generic_init($td, ApiCrypter::key, $iv);
         $encrypted = mcrypt_generic($td, $str);
         mcrypt_generic_deinit($td);
         mcrypt_module_close($td);
@@ -23,18 +19,18 @@ class ApiCrypter {
     }
 
     public function decrypt($code) {
-        $code = $this->hex2bin($code);
-        $iv = $this->iv;
+        $code = ApiCrypter::hex2bin($code);
+        $iv = ApiCrypter::iv;
         $td = mcrypt_module_open('rijndael-128', '', 'cbc', $iv);
-        mcrypt_generic_init($td, $this->key, $iv);
+        mcrypt_generic_init($td, ApiCrypter::key, $iv);
         $decrypted = mdecrypt_generic($td, $code);
         mcrypt_generic_deinit($td);
         mcrypt_module_close($td);
         $ut = utf8_encode(trim($decrypted));
-        return $this->pkcs5_unpad($ut);
+        return ApiCrypter::pkcs5_unpad($ut);
     }
 
-    protected function hex2bin($hexdata) {
+    private function hex2bin($hexdata) {
         $bindata = '';
         for ($i = 0; $i < strlen($hexdata); $i += 2) {
             $bindata .= chr(hexdec(substr($hexdata, $i, 2)));
@@ -42,13 +38,13 @@ class ApiCrypter {
         return $bindata;
     }
 
-    protected function pkcs5_pad($text) {
+    private function pkcs5_pad($text) {
         $blocksize = 16;
         $pad = $blocksize - (strlen($text) % $blocksize);
         return $text . str_repeat(chr($pad), $pad);
     }
 
-    protected function pkcs5_unpad($text) {
+    private function pkcs5_unpad($text) {
         $pad = ord($text{strlen($text) - 1});
         if ($pad > strlen($text)) {
             return $text;

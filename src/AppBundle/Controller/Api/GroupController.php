@@ -15,14 +15,13 @@ class GroupController extends Controller {
      * @Method({"GET", "POST"})
      */
     public function getUsersLocation(Group $group, Request $request){
-        if (!$request->query->get('json')) {
+        try {
+            $params = ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
             return new JsonResponse(array(
-                'error' => "json was not defined",
+                'error' => $ex->getMessage(),
             ));
         }
-        
-        $json = utf8_encode($request->query->get('json'));
-        $params = json_decode($json);
         
         $data = array();
         $users = $group->getUseruser();
@@ -30,7 +29,7 @@ class GroupController extends Controller {
         //only group members can access those informations
         $validator = false;
         foreach ($users as $user){
-            if($user->getApiKey() === $params->apiKey && $user->getIduser() === $params->idUser){
+            if($user->getIduser() === $params->idUser){
                 $validator = true;
             }
             

@@ -7,44 +7,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use AppBundle\Utils\ApiCrypter;
+use Symfony\Component\Security\Acl\Exception\Exception;
+use AppBundle\Utils\ApiValidator;
 use AppBundle\Entity\User;
 
 class UserController extends Controller {
-
-    /**
-     * @Route("/api/user/crypttest", name="api_user_crypttest")
-     */
-    public function cryptTest() {
-        $time = (String) time();
-        $str = "123456789-$time";
-        
-        $crypter = new ApiCrypter();
-        
-        $enStr = $crypter->encrypt($str);
-        
-        $output = "$str -----";
-        $output .= "String encriptada: $enStr ----";
-        $output .= 'String desencriptada: ' . $crypter->decrypt($enStr);
-        
-        return new JsonResponse(array(
-                'output' => $output,
-            ));
-    }
     
     /**
      * @Route("/api/user/save", name="api_user_save")
      * @Method({"GET"})
      */
     public function saveUser(Request $request) {
-        if (!$request->query->get('json')) {
+        try {
+            $params = ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
             return new JsonResponse(array(
-                'error' => "json was not defined",
+                'error' => $ex->getMessage(),
             ));
         }
-        
-        $json = utf8_encode($request->query->get('json'));
-        $params = json_decode($json);
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -64,7 +44,7 @@ class UserController extends Controller {
                 $user->setBirth(new \DateTime($params->birth));
             }
         } else {
-            $user = new User($params->userName, $params->email, $encrypted_password, new \DateTime($params->birth));
+            $user = new User($params->userName, $params->email, $params->password, new \DateTime($params->birth));
         }
 
         $validator = $this->get('validator');
@@ -90,19 +70,11 @@ class UserController extends Controller {
      * @Method({"GET", "POST"})
      */
     public function getById(User $user, Request $request) {
-        if (!$request->query->get('json')) {
+        try {
+            ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
             return new JsonResponse(array(
-                'error' => 'json was not defined',
-            ));
-        }
-        
-        $json = utf8_encode($request->query->get('json'));
-        $params = json_decode($json);
-        
-        //api key validator
-        if (!isset($params->apiKey) || $params->apiKey != $user->getApiKey()) {
-            return new JsonResponse(array(
-                'error' => "authentication error",
+                'error' => $ex->getMessage(),
             ));
         }
         
@@ -119,14 +91,13 @@ class UserController extends Controller {
      * @Method({"GET", "POST"})
      */
     public function getByLogin(Request $request) {
-        if (!$request->query->get('json')) {
+        try {
+            $params = ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
             return new JsonResponse(array(
-                'error' => 'json was not defined',
+                'error' => $ex->getMessage(),
             ));
         }
-        
-        $json = utf8_encode($request->query->get('json'));
-        $params = json_decode($json);
         
         $userArray = $this->getDoctrine()->getRepository('AppBundle:User')->findUserByLogin($params->email, $params->password);
         $user = $userArray[0];
@@ -146,19 +117,11 @@ class UserController extends Controller {
      * @Method({"GET", "POST"})
      */
     public function setPosition(User $user, Request $request) {
-        if (!$request->query->get('json')) {
+        try {
+            $params = ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
             return new JsonResponse(array(
-                'error' => 'json was not defined',
-            ));
-        }
-        
-        $json = utf8_encode($request->query->get('json'));
-        $params = json_decode($json);
-        
-        //api key validator
-        if (!isset($params->apiKey) || $params->apiKey != $user->getApiKey()) {
-            return new JsonResponse(array(
-                'error' => "authentication error",
+                'error' => $ex->getMessage(),
             ));
         }
 
@@ -189,19 +152,11 @@ class UserController extends Controller {
      * @Method({"GET", "POST"})
      */
     public function getGroups(User $user, Request $request) {
-        if (!$request->query->get('json')) {
+        try {
+            ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
             return new JsonResponse(array(
-                'error' => 'json was not defined',
-            ));
-        }
-        
-        $json = utf8_encode($request->query->get('json'));
-        $params = json_decode($json);
-        
-        //api key validator
-        if (!isset($params->apiKey) || $params->apiKey != $user->getApiKey()) {
-            return new JsonResponse(array(
-                'error' => "authentication error",
+                'error' => $ex->getMessage(),
             ));
         }
         
