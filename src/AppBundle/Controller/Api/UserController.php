@@ -101,10 +101,13 @@ class UserController extends Controller {
         
         $userArray = $this->getDoctrine()->getRepository('AppBundle:User')->findUserByLogin($params->email, $params->password);
         $user = $userArray[0];
+        
+        $birth = $user->getBirth();
 
         $data = array(
             'idUser' => $user->getIduser(),
             'userName' => $user->getUserName(),
+            'birth' => $birth->format('Y-m-d'),
             'email' => $user->getEmail(),
             'password' => $user->getPassword()
         );
@@ -114,7 +117,7 @@ class UserController extends Controller {
 
     /**
      * @Route("/api/user/{iduser}/set-position", requirements={"iduser" = "\d+"}, name="api_user_set-position")
-     * @Method({"GET", "POST"})
+     * @Method({"POST"})
      */
     public function setPosition(User $user, Request $request) {
         try {
@@ -129,6 +132,7 @@ class UserController extends Controller {
 
         $user->setLatitude((float) $params->latitude);
         $user->setLongitude((float) $params->longitude);
+        $user->setPositionDate(new \DateTime($params->date));
 
         $validator = $this->get('validator');
         $errors = $validator->validate($user);
@@ -149,7 +153,7 @@ class UserController extends Controller {
 
     /**
      * @Route("/api/user/{iduser}/get-groups", requirements={"iduser" = "\d+"}, name="api_user_get-groups")
-     * @Method({"GET", "POST"})
+     * @Method({"POST"})
      */
     public function getGroups(User $user, Request $request) {
         try {

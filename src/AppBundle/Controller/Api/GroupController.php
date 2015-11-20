@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Utils\ApiValidator;
 use AppBundle\Entity\Group;
 
 class GroupController extends Controller {
@@ -16,7 +17,7 @@ class GroupController extends Controller {
      */
     public function getUsersLocation(Group $group, Request $request){
         try {
-            $params = ApiValidator::validateRequest($request);
+            ApiValidator::validateRequest($request);
         } catch (Exception $ex) {
             return new JsonResponse(array(
                 'error' => $ex->getMessage(),
@@ -26,27 +27,16 @@ class GroupController extends Controller {
         $data = array();
         $users = $group->getUseruser();
         
-        //only group members can access those informations
-        $validator = false;
         foreach ($users as $user){
-            if($user->getIduser() === $params->idUser){
-                $validator = true;
-            }
-            
             $data[] = array(
                 'idUser' => $user->getIduser(),
                 'longitude' => $user->getLongitude(),
                 'latitude' => $user->getLatitude(),
-                'position_date' => $user->getPositionDate()->format('Y-m-d H:i:s')
+                'position_date' => $user->getPositionDate()->format('Y-m-d H:i:s'),
+                'photo_patch' => $this->getRequest()->getUriForPath('/images/'.$user->getPhotoPatch())
             );
         }
-        
-        if($validator === false){
-            return new JsonResponse(array(
-                'error' => "authentication error",
-            ));
-        }
-        
+ 
         return new JsonResponse($data);
     }
 }

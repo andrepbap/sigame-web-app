@@ -39,7 +39,7 @@ class User {
     /**
      * @var string
      * @ORM\Column(name="password", type="string", length=45, nullable=false)
-     * @Assert\Length(min="4", max="16", minMessage="Your password must be at least {{ limit }} characters long", maxMessage="Your password cannot be longer than {{ limit }} characters")
+     * @Assert\Length(min="4", max="45", minMessage="Your password must be at least {{ limit }} characters long", maxMessage="Your password cannot be longer than {{ limit }} characters")
      * @Assert\NotBlank()
      */
     private $password;
