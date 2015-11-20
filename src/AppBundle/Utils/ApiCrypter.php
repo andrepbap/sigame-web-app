@@ -5,7 +5,7 @@ namespace AppBundle\Utils;
 final class ApiCrypter {
 
     const iv = 'ajf9gld3soh5dy56';
-    const key = 'znft4j27894kn94k1';
+    const key = '89432hjfsd891787';
 
     public function encrypt($str) {
         $str = ApiCrypter::pkcs5_pad($str);

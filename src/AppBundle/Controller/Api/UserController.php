@@ -88,7 +88,7 @@ class UserController extends Controller {
 
     /**
      * @Route("/api/user/login", name="api_user_login")
-     * @Method({"GET", "POST"})
+     * @Method({"POST"})
      */
     public function getByLogin(Request $request) {
         try {
@@ -106,7 +106,7 @@ class UserController extends Controller {
             'idUser' => $user->getIduser(),
             'userName' => $user->getUserName(),
             'email' => $user->getEmail(),
-            'photoPatch' => $user->getPhotoPatch()
+            'password' => $user->getPassword()
         );
 
         return new JsonResponse($data);

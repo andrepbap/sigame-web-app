@@ -164,8 +164,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
                 // api_user_login
                 if ($pathinfo === '/api/user/login') {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
                         goto not_api_user_login;
                     }
 

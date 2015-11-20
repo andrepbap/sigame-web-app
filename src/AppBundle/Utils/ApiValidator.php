@@ -18,18 +18,18 @@ final class ApiValidator {
         $token = strtok($decrypted, "-");
         $salt = strtok('-');
         $time = time() - $salt;
-        if ($token == ApiValidator::apiKey && $time < 5) {
+        if ($token == ApiValidator::apiKey && $time > -10 && $time < 10) {
             return true;
         }
         return false;
     }
     
     public function validateRequest($request){
-        if (!$request->query->get('json')) {
+        if (!$request->request->get('json')) {
             throw new Exception("json was not defined");
         }
         
-        $json = utf8_encode(!$request->query->get('json'));
+        $json = utf8_encode($request->request->get('json'));
         $params = json_decode($json);
         
         if (!isset($params->apiKey) || !ApiValidator::validateApiKey($params->apiKey)) {
