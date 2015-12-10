@@ -33,7 +33,7 @@ class GroupController extends Controller {
                 'longitude' => $user->getLongitude(),
                 'latitude' => $user->getLatitude(),
                 'position_date' => $user->getPositionDate()->format('Y-m-d H:i:s'),
-                'photo_patch' => $this->getRequest()->getUriForPath('/images/'.$user->getPhotoPatch())
+                'photo_patch' => $user->getPhotoPatch()
             );
         }
  

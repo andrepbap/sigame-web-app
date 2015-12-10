@@ -142,8 +142,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             if (0 === strpos($pathinfo, '/api/user')) {
                 // api_user_save
                 if ($pathinfo === '/api/user/save') {
-                    if (!in_array($this->context->getMethod(), array('GET', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'HEAD'));
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
                         goto not_api_user_save;
                     }
 
@@ -162,6 +162,17 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 }
                 not_api_user_get:
 
+                // api_user_save-facebook-user
+                if ($pathinfo === '/api/user/save-facebook-user') {
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
+                        goto not_api_user_savefacebookuser;
+                    }
+
+                    return array (  '_controller' => 'AppBundle\\Controller\\Api\\UserController::saveFacebookUser',  '_route' => 'api_user_save-facebook-user',);
+                }
+                not_api_user_savefacebookuser:
+
                 // api_user_login
                 if ($pathinfo === '/api/user/login') {
                     if ($this->context->getMethod() != 'POST') {
@@ -175,8 +186,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
                 // api_user_set-position
                 if (preg_match('#^/api/user/(?P<iduser>\\d+)/set\\-position$#s', $pathinfo, $matches)) {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
                         goto not_api_user_setposition;
                     }
 
@@ -186,8 +197,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
                 // api_user_get-groups
                 if (preg_match('#^/api/user/(?P<iduser>\\d+)/get\\-groups$#s', $pathinfo, $matches)) {
-                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
                         goto not_api_user_getgroups;
                     }
 

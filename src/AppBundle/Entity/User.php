@@ -24,10 +24,15 @@ class User {
      * @var \DateTime
      * @ORM\Column(name="birth", type="datetime", nullable=false)
      * @Assert\Date()
-     * @Assert\NotBlank()
      */
     private $birth;
 
+    /**
+     * @var \BigIntType
+     * @ORM\Column(name="facebook_id", type="bigint")
+     */
+    private $facebookId;
+    
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=45, nullable=false)
@@ -40,7 +45,6 @@ class User {
      * @var string
      * @ORM\Column(name="password", type="string", length=45, nullable=false)
      * @Assert\Length(min="4", max="45", minMessage="Your password must be at least {{ limit }} characters long", maxMessage="Your password cannot be longer than {{ limit }} characters")
-     * @Assert\NotBlank()
      */
     private $password;
 
@@ -109,7 +113,6 @@ class User {
     
     /**
      * @var string
-     *
      * @ORM\Column(name="salt", type="string", length=45, nullable=false)
      */
     private $salt;
@@ -124,12 +127,10 @@ class User {
     /**
      * Constructor
      */
-    public function __construct($userName, $email, $password, $birth) {
+    public function __construct($userName, $email) {
         $this->groupgroup = new \Doctrine\Common\Collections\ArrayCollection();
         $this->userName = $userName;
         $this->email = $email;
-        $this->password = $password;
-        $this->birth = $birth;
     }
 
     /**
@@ -174,6 +175,28 @@ class User {
      */
     public function getBirth() {
         return $this->birth;
+    }
+    
+    /**
+     * Set facebookId
+     *
+     * @param \BigIntType $facebookId
+     *
+     * @return User
+     */
+    public function setFacebookId($facebookId) {
+        $this->facebookId = $facebookId;
+
+        return $this;
+    }
+    
+    /**
+     * Get facebookId
+     *
+     * @return \BigIntType
+     */
+    public function getFacebookId() {
+        return $this->facebookId;
     }
 
     /**
@@ -305,6 +328,9 @@ class User {
      * @return string
      */
     public function getPhotoPatch() {
+        if(!filter_var($this->photoPatch, FILTER_VALIDATE_URL)){
+            return $this->getRequest()->getUriForPath('/images/'.$this->photoPatch);
+        }
         return $this->photoPatch;
     }
 

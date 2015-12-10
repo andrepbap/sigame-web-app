@@ -15,7 +15,7 @@ class UserController extends Controller {
     
     /**
      * @Route("/api/user/save", name="api_user_save")
-     * @Method({"GET"})
+     * @Method({"POST"})
      */
     public function saveUser(Request $request) {
         try {
@@ -31,20 +31,21 @@ class UserController extends Controller {
         if (isset($params->idUser)) {
             $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($params->idUser);
 
-            if (isset($params->userName)) {
-                $user->setUserName($params->userName);
-            }
             if (isset($params->email)) {
                 $user->setEmail($params->email);
             }
             if (isset($params->password)) {
                 $user->setPassword($params->password);
             }
-            if (isset($params->birth)) {
-                $user->setBirth(new \DateTime($params->birth));
-            }
         } else {
-            $user = new User($params->userName, $params->email, $params->password, new \DateTime($params->birth));
+            $user = new User($params->userName, $params->email);
+            //check if user have a facebook id
+            if (isset($params->facebookId)) {
+                $user->setFacebookId($params->facebookId);
+                $user->setPhotoPatch($params->photo_patch);
+            } else {
+                $user->setPassword($params->password);
+            }
         }
 
         $validator = $this->get('validator');
@@ -62,6 +63,7 @@ class UserController extends Controller {
 
         return new JsonResponse(array(
             'sucess' => 'true',
+            'idUser' => $user->getIduser()
         ));
     }
 
@@ -79,8 +81,48 @@ class UserController extends Controller {
         }
         
         $data = array(
-            'user_name' => $user->getUserName(),
-            'email' => $user->getEmail()
+            'idUser' => $user->getIduser(),
+            'userName' => $user->getUserName(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'photo_patch' => $user->getPhotoPatch()
+        );
+
+        return new JsonResponse($data);
+    }
+    
+    /**
+     * @Route("/api/user/save-facebook-user", name="api_user_save-facebook-user")
+     * @Method({"POST"})
+     */
+    public function saveFacebookUser(Request $request) {
+        try {
+            $params = ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
+            return new JsonResponse(array(
+                'error' => $ex->getMessage(),
+            ));
+        }
+        
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array("facebookId" => $params->facebookId));
+
+        if($user == null){
+            $entityManager = $this->getDoctrine()->getManager();
+            
+            $user = new User($params->userName, $params->email);
+            $user->setFacebookId($params->facebookId);
+            $user->setPhotoPatch($params->photo_patch);
+            
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        $data = array(
+            'idUser' => $user->getIduser(),
+            'userName' => $user->getUserName(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'photo_patch' => $user->getPhotoPatch()
         );
 
         return new JsonResponse($data);
@@ -101,15 +143,13 @@ class UserController extends Controller {
         
         $userArray = $this->getDoctrine()->getRepository('AppBundle:User')->findUserByLogin($params->email, $params->password);
         $user = $userArray[0];
-        
-        $birth = $user->getBirth();
 
         $data = array(
             'idUser' => $user->getIduser(),
             'userName' => $user->getUserName(),
-            'birth' => $birth->format('Y-m-d'),
             'email' => $user->getEmail(),
-            'password' => $user->getPassword()
+            'password' => $user->getPassword(),
+            'photo_patch' => $user->getPhotoPatch()
         );
 
         return new JsonResponse($data);
@@ -172,7 +212,7 @@ class UserController extends Controller {
                 'idGroup' => $group->getIdgroup(),
                 'group_name' => $group->getGroupName(),
                 'description' => $group->getDescription(),
-                'photo-patch' => $group->getPhotoPatch()
+                'photo-patch' => $this->getRequest()->getUriForPath('/images/'.$group->getPhotoPatch())
             );
         }
 
