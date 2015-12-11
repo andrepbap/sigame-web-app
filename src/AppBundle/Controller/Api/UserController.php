@@ -212,7 +212,7 @@ class UserController extends Controller {
                 'idGroup' => $group->getIdgroup(),
                 'group_name' => $group->getGroupName(),
                 'description' => $group->getDescription(),
-                'photo-patch' => $this->getRequest()->getUriForPath('/images/'.$group->getPhotoPatch())
+                'photo-patch' => $this->getRequest()->getUriForPath('/images/groups/'.$group->getPhotoPatch())
             );
         }
 

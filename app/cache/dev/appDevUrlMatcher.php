@@ -128,16 +128,30 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         if (0 === strpos($pathinfo, '/api')) {
-            // api_group_get-users-location
-            if (0 === strpos($pathinfo, '/api/group') && preg_match('#^/api/group/(?P<idgroup>\\d+)/get\\-users\\-location$#s', $pathinfo, $matches)) {
-                if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
-                    $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
-                    goto not_api_group_getuserslocation;
-                }
+            if (0 === strpos($pathinfo, '/api/group')) {
+                // api_group_get-users-location
+                if (preg_match('#^/api/group/(?P<idgroup>\\d+)/get\\-users\\-location$#s', $pathinfo, $matches)) {
+                    if (!in_array($this->context->getMethod(), array('GET', 'POST', 'HEAD'))) {
+                        $allow = array_merge($allow, array('GET', 'POST', 'HEAD'));
+                        goto not_api_group_getuserslocation;
+                    }
 
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'api_group_get-users-location')), array (  '_controller' => 'AppBundle\\Controller\\Api\\GroupController::getUsersLocation',));
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'api_group_get-users-location')), array (  '_controller' => 'AppBundle\\Controller\\Api\\GroupController::getUsersLocation',));
+                }
+                not_api_group_getuserslocation:
+
+                // api_group_save
+                if ($pathinfo === '/api/group/save') {
+                    if ($this->context->getMethod() != 'POST') {
+                        $allow[] = 'POST';
+                        goto not_api_group_save;
+                    }
+
+                    return array (  '_controller' => 'AppBundle\\Controller\\Api\\GroupController::saveGroup',  '_route' => 'api_group_save',);
+                }
+                not_api_group_save:
+
             }
-            not_api_group_getuserslocation:
 
             if (0 === strpos($pathinfo, '/api/user')) {
                 // api_user_save

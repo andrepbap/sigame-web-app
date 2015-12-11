@@ -39,4 +39,59 @@ class GroupController extends Controller {
  
         return new JsonResponse($data);
     }
+    
+    /**
+     * @Route("/api/group/save", name="api_group_save")
+     * @Method({"POST"})
+     */
+    public function saveGroup(Request $request){
+        try {
+            $params = ApiValidator::validateRequest($request);
+        } catch (Exception $ex) {
+            return new JsonResponse(array(
+                'error' => $ex->getMessage(),
+            ));
+        }
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        
+        if (isset($params->idGroup)) {
+            $group = $this->getDoctrine()->getRepository('AppBundle:Group')->find($params->idGroup);
+
+            if (isset($params->name)) {
+                $group->setEmail($params->name);
+            }
+            
+            if (isset($params->description)) {
+                $group->setPassword($params->description);
+            }
+            
+            if (isset($params->photo_patch)) {
+                $group->setPassword($params->description);
+            }
+        } else {
+            $group = new Group($params->name, $params->description);
+            // find and add user
+            $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($params->idUser);
+            $group->addUseruser($user);
+        }
+        
+        $validator = $this->get('validator');
+        $errors = $validator->validate($group);
+        
+        if (count($errors) > 0) {
+            $errorsString = (string) $errors;
+            return new JsonResponse(array(
+                'error' => $errorsString,
+            ));
+        }
+        
+        $entityManager->persist($group);
+        $entityManager->flush();
+        
+        return new JsonResponse(array(
+            'sucess' => 'true',
+            'idGroup' => $group->getIdgroup()
+        ));
+    }
 }

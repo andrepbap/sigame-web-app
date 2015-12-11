@@ -60,9 +60,11 @@ class Group
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct($name, $description)
     {
         $this->useruser = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->groupName = $name;
+        $this->description = $description;
     }
 
 
