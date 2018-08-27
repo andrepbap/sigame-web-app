@@ -1,4 +1,4 @@
 sigame
 ======
 
-A Symfony project created on November 10, 2015, 8:30 pm.
+API WEB criado para fins de estudo do framework Symfony. Desenvolvido para ser o back-end do projeto Follow-me: https://github.com/andrepbap/FollowMe
